@@ -95,7 +95,7 @@ Future enhancements to the project could include:
 ## 13. Installation 
 Clone the repository to your local machine:
 ```bash
-git clone https://github.com/your_username/terrain-recognition.git
+git clone https://github.com/RohanAgarkar/Terrain_Recognition-Hackathon.git
 ```
 Install the required dependencies:
 ```bash
