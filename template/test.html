@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Webcam Stream</title>
+    <!-- <meta http-equiv="refresh" content="1"> -->
+</head>
+<body>
+    <img src="" alt="" id="webcamStream" hidden/>
+    <button id="refresh-btn">Start Camera</button>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+    <script>
+        const btn = document.getElementById("refresh-btn")
+        const img = document.getElementById("webcamStream")
+        let video = false
+        btn.addEventListener("click", () => {
+            video = !video
+            if (video){
+                img.hidden = false
+                btn.innerText = "Stop Camera"
+                startAutoRefresh()
+            }else{
+                img.hidden = true
+                btn.innerText = "Start Camera"
+                clearInterval(autoRefreshInterval)
+                sendData()
+            }
+        })
+
+        function startAutoRefresh() {
+            autoRefreshInterval = setInterval(function(){
+                var timestamp = new Date().getTime()
+                img.src = "{{url_for('camera')}}?t="+timestamp
+            }, 50)
+        }
+        let autoRefreshInterval = null
+
+        function sendData() {
+            // Get form data
+            var formData = {
+                CloseCam: "True"
+            };
+
+            // Convert form data to JSON
+            var jsonData = JSON.stringify(formData);
+
+            // Send JSON data to Flask server
+            fetch('{{url_for("stopcam")}}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: jsonData
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Response from server:', data);
+                // Do something with the response if needed
+            })
+            .catch(error => console.error('Error:', error));
+        }
+    </script>
+</body>
+</html>
